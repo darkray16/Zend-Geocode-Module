@@ -1,0 +1,3 @@
+Zend-Geocode-Module is a module written by me that is free for use by anyone and is allowed to be modified and used by all.  I wrote this module because Zend Framework is missing a module for geocoding.  This geocoding module does use Google as of right now, but I plan to implement the option to use other services besides Google later on.
+
+Right now, it's still in it's very initial beginnings and any suggestions and advice is appreciated.
