@@ -2,7 +2,7 @@
 
 class Geocode_Google_Adapter extends Geocode_AbstractAdapter
 {
-	protected $_localization; //e.g. 'USA', 'Ireland'
+	protected $_localization; //e.g. 'USA', 'SouthKorea'
 
 	public function __construct($localization) {
 		//localize the terms for regions, e.g. states, prefecture, provinces
