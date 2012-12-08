@@ -1,4 +1,4 @@
-This library is a module that is usable with <a href="http://framework.zend.com/manual/1.12/en/introduction.html">Zend Framework 1</a>.  To add it to a site utilizing Zend Framework, add this folder, or a link to it in the webroot/library directory, where the Zend Framework itself is also found.  Next, you must add the line: 
+This library is a module that is usable with Zend Framework 1(framework.zend.com/manual/1.12/en/introduction.html).  To add it to a site utilizing Zend Framework, add this folder, or a link to it in the webroot/library directory, where the Zend Framework itself is also found.  Next, you must add the line: 
 
 "autoloaderNamespaces[] = Geocode_" 
 
