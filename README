@@ -10,33 +10,52 @@ To see it in action, create the following files and content:
 
 application/controllers/DemoController.php
 
-class DemoController extends Zend_Controller_Action
+<?php
+class GeocodeController extends Zend_Controller_Action
 {
 
-  public function init()
-  {
-      /* Initialize action controller here */
-  }
-  
-  public function indexAction()
-  {
-    $geocoder = new Geocode_Geocoder("google", "USA");
-	  $coordinates = new Geocode_Coordinates();
+    public function init()
+    {
+        /* Initialize action controller here */
+    }
+
+    public function indexAction()
+    {
+	$geocoder = new Geocode_Geocoder("google");
+	$coordinates = new Geocode_Coordinates();
 	
-	  $coordinates->setCoordinates(array('lat'=>38.286488,'lng'=>-107.578125));
-	  $geocoder->setCoordinates($coordinates);
-	  $address = $geocoder->retrieveAddress();
-	  $this->view->address = $address;
-  }
+	$coordinates->setCoordinates(array('lat'=>38.286488,'lng'=>-107.578125));
+	$geocoder->setCoordinates($coordinates);
+	$address = $geocoder->retrieveAddress();
+	
+	$this->view->address = $address->getUnformattedAddress();
+	$this->view->street = $address->get("route");
+	$this->view->city = $address->get("sublocality");
+	$this->view->state = $address->get("administrative_area_level_1");
+	$this->view->county = $address->get("administrative_area_level_2");
+	$this->view->country = $address->get("country");
+	
+	$this->view->longitude = $coordinates->getLongitude();
+	$this->view->latitude = $coordinates->getLatitude();
+    }
 }
+
 
 
 application/views/scripts/demo/index.phtml
 
+<?php
 <head>
     <title>Test Geocoding Page</title>
 </head>
 
 <body>
-    <?php echo var_dump($this->address);?>
+	<p>Coordinates: <?php echo $this->latitude . ", " . $this->longitude;?></p>
+	<p>Street: <?php echo $this->street;?></p>
+	<p>City: <?php echo $this->city; ?></p>
+	<p>County: <?php echo $this->county; ?></p>
+	<p>State: <?php echo $this->state; ?></p>
+	<p>Country: <?php echo $this->country; ?></p>
+	
+	<p>Full Address: <?php echo $this->address; ?></p>
 </body>
