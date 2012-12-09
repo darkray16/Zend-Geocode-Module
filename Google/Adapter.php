@@ -86,15 +86,17 @@ class Geocode_Google_Adapter implements Geocode_AdapterInterface
 			{
 				if ($result->type == 'street_address')
 				{
-					$addressObj->setUnformattedAddress($result->formatted_address);
+					$addressObj->setUnformattedAddress((string) $result->formatted_address);
 					foreach($result as $component)
 					{
-						$addressObj->set($component->type, $component->long_name);
+						$addressObj->set((string) $component->type, $component->long_name);
 					}
 				}
 			}
 
 			return $addressObj;
+		} else {
+			return null;
 		}
 	}
 }

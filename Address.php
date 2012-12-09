@@ -32,7 +32,7 @@ class Geocode_Address {
 	 * @access protected
 	 * @var array
 	 */
-	protected $_data = array();
+	public $_data = array();
 	
 	/**
 	 * Stores the entire address as single string.
@@ -110,7 +110,7 @@ class Geocode_Address {
 	 */
 	public function getUnformattedAddress()
 	{
-		return $this->_unformattedAddress = $unformattedAddress;
+		return $this->_unformattedAddress;
 	}
 	
 	/**
