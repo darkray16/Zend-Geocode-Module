@@ -76,10 +76,15 @@ class Geocode_Address {
 		return $this->_data[$property];
 	}
 
+	public function getFullAddress()
+	{
+		return implode(" ", $this->_data);
+	}
+
 	/**
 	 * Returns a list of all address types that have been set. To be used
 	 * with $this->get, as the elements returned are the strings that must be
-	 * passed to $this->get
+	 * passed to $this->get.
 	 * 
 	 * @return array list of all the addres types of the address data stored
 	 */

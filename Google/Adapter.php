@@ -30,12 +30,16 @@ class Geocode_Google_Adapter implements Geocode_AdapterInterface
 	 */
 	public function getCoordinates(Geocode_Address $addressObj)
 	{
-		$addressStr = '';
-		foreach($addressObj->getAddress() as $info)
-		{
-			$addressStr .= $info . ',';
+		//Google Geocoding services doesn't care what the type of address info is
+		//therefore info like which string is the city, and which is the country, is not
+		//sent.  The following string merely concatenates all the address values, and discards
+		//the keys/type.
+		$addressStr = $addressObj->getFullAddress();
+		
+		if (empty($addressStr)) {
+			throw new Exception("Address has not been set prior to calling getCoordinates.");
 		}
-
+		
 		$httpClient = new Zend_Http_Client();
 		$httpClient->setUri(self::GOOGLE_URL);
 		$httpClient->setParameterGet('address', $addressStr)
