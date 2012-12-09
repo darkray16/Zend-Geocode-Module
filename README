@@ -51,7 +51,7 @@ class DemoController extends Zend_Controller_Action
 		$coordinates2 = $geocoder->retrieveCoordinates();
 		
 		$this->view->address2 = $address2->getFullAddress();
-	    $this->view->latitude2 = $coordinates2->getLatitude();
+	    	$this->view->latitude2 = $coordinates2->getLatitude();
 		$this->view->longitude2 = $coordinates2->getLongitude();
 	}
 }
