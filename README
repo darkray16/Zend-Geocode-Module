@@ -1,4 +1,6 @@
-This library is a module that is usable with Zend Framework 1 (http://framework.zend.com/manual/1.12/en/introduction.html).  To add it to a site utilizing Zend Framework, add this folder, or a link to it in the webroot/library directory, where the Zend Framework itself is also found.  Next, you must add the line: 
+This library allows you to retrieve a street address when you have the latitude, longitude coordinates of a point.  The reverse is also true, you can obtain the coordinates of a street address.  Currently, only Google Geocode services is supported, but I have plans to add options to use other Geocoding services, like Bing.
+
+This is a Zend Framework 1 module, that is not compatible with Zend Framework 2.  To learn about Zend Framework, go to http://framework.zend.com/manual/1.12/en/introduction.html. To add it to a site utilizing Zend Framework, add this folder, or a link to it in the webroot/library directory, where the Zend Framework itself is also found.  Next, you must add the line: 
 
 "autoloaderNamespaces[] = Geocode_" 
 
@@ -11,7 +13,8 @@ To see it in action, create the following files and content:
 application/controllers/DemoController.php
 
 <?php
-class GeocodeController extends Zend_Controller_Action
+
+class DemoController extends Zend_Controller_Action
 {
 
     public function init()
@@ -21,41 +24,57 @@ class GeocodeController extends Zend_Controller_Action
 
     public function indexAction()
     {
-	$geocoder = new Geocode_Geocoder("google");
-	$coordinates = new Geocode_Coordinates();
-	
-	$coordinates->setCoordinates(array('lat'=>38.286488,'lng'=>-107.578125));
-	$geocoder->setCoordinates($coordinates);
-	$address = $geocoder->retrieveAddress();
-	
-	$this->view->address = $address->getUnformattedAddress();
-	$this->view->street = $address->get("route");
-	$this->view->city = $address->get("sublocality");
-	$this->view->state = $address->get("administrative_area_level_1");
-	$this->view->county = $address->get("administrative_area_level_2");
-	$this->view->country = $address->get("country");
-	
-	$this->view->longitude = $coordinates->getLongitude();
-	$this->view->latitude = $coordinates->getLatitude();
-    }
+		$geocoder = new Geocode_Geocoder("google");
+		$coordinates = new Geocode_Coordinates();
+		
+		$coordinates->setCoordinates(array('lat'=>38.286488,'lng'=>-107.578125));
+		$geocoder->setCoordinates($coordinates);
+		$address = $geocoder->retrieveAddress();
+		
+		$this->view->address = $address->getUnformattedAddress();
+		$this->view->street = $address->get("route");
+		$this->view->city = $address->get("sublocality");
+		$this->view->state = $address->get("administrative_area_level_1");
+		$this->view->county = $address->get("administrative_area_level_2");
+		$this->view->country = $address->get("country");
+		
+		$this->view->longitude = $coordinates->getLongitude();
+		$this->view->latitude = $coordinates->getLatitude();
+		
+		$address2 = new Geocode_Address();
+		$address2->set("street", "park street and otis dr");
+		$address2->set("city", "alameda");
+		$address2->set("state", "california");
+		$address2->set("country", "usa");
+		
+		$geocoder->setAddress($address2);
+		$coordinates2 = $geocoder->retrieveCoordinates();
+		
+		$this->view->address2 = $address2->getFullAddress();
+	    	$this->view->latitude2 = $coordinates2->getLatitude();
+		$this->view->longitude2 = $coordinates2->getLongitude();
+	}
 }
-
 
 
 application/views/scripts/demo/index.phtml
 
-<?php
 <head>
     <title>Test Geocoding Page</title>
 </head>
 
 <body>
+	<strong>Address Retrieval with Coordinates:</strong>
 	<p>Coordinates: <?php echo $this->latitude . ", " . $this->longitude;?></p>
 	<p>Street: <?php echo $this->street;?></p>
 	<p>City: <?php echo $this->city; ?></p>
 	<p>County: <?php echo $this->county; ?></p>
 	<p>State: <?php echo $this->state; ?></p>
 	<p>Country: <?php echo $this->country; ?></p>
-	
 	<p>Full Address: <?php echo $this->address; ?></p>
+	
+	<strong>Coordinates Retrieval with Address:</strong>
+	<p>Full Address: <?php echo $this->address2; ?></p>
+	<p>Latitude: <?php echo $this->latitude2; ?> <br>
+	   Longitude: <?php echo $this->longitude2; ?></p>
 </body>
