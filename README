@@ -1,4 +1,7 @@
-This library is a module that is usable with Zend Framework 1 (http://framework.zend.com/manual/1.12/en/introduction.html).  To add it to a site utilizing Zend Framework, add this folder, or a link to it in the webroot/library directory, where the Zend Framework itself is also found.  Next, you must add the line: 
+
+This library allows you to retrieve a street address when you have the latitude, longitude coordinates of a point.  The reverse is also true, you can obtain the coordinates of a street address.  Currently, only Google Geocode services is supported, but I have plans to add options to use other Geocoding services, like Bing.
+
+This is a Zend Framework 1 module, that is not compatible with Zend Framework 2.  To learn about Zend Framework, go to http://framework.zend.com/manual/1.12/en/introduction.html. To add it to a site utilizing Zend Framework, add this folder, or a link to it in the webroot/library directory, where the Zend Framework itself is also found.  Next, you must add the line: 
 
 "autoloaderNamespaces[] = Geocode_" 
 
