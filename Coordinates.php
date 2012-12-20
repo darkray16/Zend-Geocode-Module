@@ -7,6 +7,7 @@
  * @since Version 0.1
  */
  
+
 /**
  * Data object for storage of latitude, longitude.  Use this to pass
  * coordinates to adapter for retrieval.  This is also the form in which

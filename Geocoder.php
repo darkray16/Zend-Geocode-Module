@@ -42,15 +42,37 @@ class Geocode_Geocoder
 	protected $_coordinates;
 	
 	/**
-	 * Constructor... 
+	 * Stores all adapters passed by the user.  Coordinates/Address retrieval will
+	 * loop through adapters until results are returned or all have been called.
+	 * 
+	 * @access protected
+	 * @var array
+	 */
+	protected $_adapters = array();
+	
+	/**
+	 * Push an adapter to an array of adapters which will be used to retrieve
+	 * coordinates/address.
 	 * 
 	 * @access public
-	 * @param string @adapter the specific web service to use, valid values:
-	 * 						  "google", "bing"
+	 * @param Geocode_AdapterInterface $adapter the layer between this class
+	 * 											and the actual web service api
+	 * @return Geocode_Geocoder returns this for fluent interface
 	 */
-	public function __construct($adapter)
+	public function addAdapter(Geocode_AdapterInterface $adapter) 
 	{
-		$this->_geocodeAdapter = Geocode_GeocodeAdapterFactory::getAdapter($adapter);
+		$this->_adapters[] = $adapter;
+		return $this;
+	}
+	
+	/**
+	 * Clears out all adapters.  At least one more will need to be added before 
+	 * calling geocoding methods(retrieveCoordinates, retrieveAddress).
+	 */
+	public function resetAdapters() 
+	{
+		$this->_adapters = array();
+		return $this;
 	}
 
 	/**
@@ -101,12 +123,14 @@ class Geocode_Geocoder
 	}
 
 	/**
-	 * Get first result for address lookup of geocode.  Exception thrown if coordinate
-	 * obj has not been set yet.
+	 * Get first result for address lookup of geocode.  Loops through all 
+	 * adapters added using addAdapters method until it can find coordinates. 
+	 * Exception thrown if coordinate obj has not been set yet.
 	 * 
 	 * @access public
 	 * @return Geocode_Address contains the address info for first result returned
 	 * 						   by geocode lookup.
+	 * @throws Exception if unable to retrieve address using all adapters.
 	 * @todo return array of all addresses found at coordinate set, instead of
 	 * 		 only the first result.
 	 */
@@ -115,22 +139,50 @@ class Geocode_Geocoder
 		if ($this->_coordinates === null) {
 			throw new Exception('Coordinates not set.');
 		}
-		return $this->_geocodeAdapter->getAddress($this->_coordinates);
+		
+		$address = null;
+		for($i=0, $length=count($this->_adapters); $i<$length; ++$i) {
+			try {
+				$address = $this->_adapters[$i]->getAddress($this->_coordinates);
+			} catch (RequestFailed $e) {
+				continue;
+			}
+		}
+		
+		if (!$address) {
+			throw new Exception('Unable to retrieve address.');
+		}
+		return $address;
 	}
 
 	/**
-	 * Get the coordinates(latitude, longitude) for coordinate lookup.  Exception
-	 * thrown if address obj has not been set yet.
+	 * Get the coordinates(latitude, longitude) for coordinate lookup.  Loops 
+	 * through all adapters added using addAdapters method until it can find
+	 * coordinates. Exception thrown if address obj has not been set yet or 
+	 * if address retrieval fails.
 	 * 
 	 * @access public
 	 * @return Geocode_Coordinates contains coordinates for geocode lookup of
 	 * 							   address that user has set.
+	 * @throws Exception if unable to retrieve coordinates using all adapters.
 	 */
 	public function retrieveCoordinates()
 	{
 		if ($this->_address === null) {
 			throw new Exception('Address not set.');
 		}
-		return $this->_geocodeAdapter->getCoordinates($this->_address);
+		
+		$coordinates = null;
+		for($i=0,$length=count($this->_adapters); $i<$length;++$i) {
+			try {
+				$coordinates = $this->_adapters[$i]->getCoordinates($this->_address);
+			} catch (RequestFailed $e) {
+				continue;
+			}
+		}
+		if (!$coordinates) {
+			throw new Exception('Unable to retrieve coordinates.');
+		}
+		return $coordinates;
 	}
 }

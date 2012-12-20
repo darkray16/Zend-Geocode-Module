@@ -7,6 +7,7 @@
  * @since Version 0.1
  */
  
+
 /**
  * Adapters are connectors to various APIs on the internet that provide
  * geocoding services.

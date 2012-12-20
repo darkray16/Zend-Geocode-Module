@@ -76,6 +76,14 @@ class Geocode_Address {
 		return $this->_data[$property];
 	}
 
+	/**
+	 * Get the entire address set by user as a single concatenated string.
+	 * Used by Adapters to pass a query string of the address in an API(like Google) 
+	 * consumable format.
+	 * 
+	 * @access public
+	 * @return string the entire address info concetenated.
+	 */
 	public function getFullAddress()
 	{
 		return implode(" ", $this->_data);

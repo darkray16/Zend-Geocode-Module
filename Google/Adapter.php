@@ -26,21 +26,24 @@ class Geocode_Google_Adapter implements Geocode_AdapterInterface
 	 * 
 	 * @access public
 	 * @param Geocode_Address $addressObj
+	 * @param Zend_Http_Client $httpClient the class that sends out the http requests
 	 * @return Geocode_Coordinates | null returns coordinates object if found 
 	 */
-	public function getCoordinates(Geocode_Address $addressObj)
+	public function getCoordinates(Geocode_Address $addressObj, $httpClient = false)
 	{
-		//Google Geocoding services doesn't care what the type of address info is
+		if (!$httpClient) {
+			$httpClient = new Zend_Http_Client();
+		}
+		//Google Geocoding services doesn't care what the type of Geocode_Addressinfo is
 		//therefore info like which string is the city, and which is the country, is not
-		//sent.  The following string merely concatenates all the address values, and discards
+		//sent.  The following string merely concatenates all the Geocode_Addressvalues, and discards
 		//the keys/type.
 		$addressStr = $addressObj->getFullAddress();
 		
 		if (empty($addressStr)) {
-			throw new Exception("Address has not been set prior to calling getCoordinates.");
+			throw new Exception("Geocode_Addresshas not been set prior to calling getCoordinates.");
 		}
 		
-		$httpClient = new Zend_Http_Client();
 		$httpClient->setUri(self::GOOGLE_URL);
 		$httpClient->setParameterGet('address', $addressStr)
 		           ->setParameterGet('sensor', 'false');
@@ -64,12 +67,12 @@ class Geocode_Google_Adapter implements Geocode_AdapterInterface
 	}
 
 	/**
-	 * Send a request to the Google Geocode web service to find street address for passed
+	 * Send a request to the Google Geocode web service to find street Geocode_Addressfor passed
 	 * coordinates.  Used by Geocoder class, not directly called by user.
 	 * 
 	 * @access public
 	 * @param Geocode_Coordinates $coordinatesObj
-	 * @return Geocode_Address | null returns address object if found 
+	 * @return Geocode_Address| null returns Geocode_Address object if found 
 	 */
 	public function getAddress(Geocode_Coordinates $coordinatesObj)
 	{
@@ -82,7 +85,7 @@ class Geocode_Google_Adapter implements Geocode_AdapterInterface
 		$response = $httpClient->request('GET');
 		$xml = new SimpleXmlElement($response->getBody());
 		
-		//parse the xml and return an Address Obj
+		//parse the xml and return an Geocode_AddressObj
 		if ($xml->status == 'OK' && !empty($xml->result))
 		{
 			$addressObj = new Geocode_Address();
